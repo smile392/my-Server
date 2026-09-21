@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Server & Database Credentials</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+    min-height:100vh;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",Arial,sans-serif;
+    color:#e5e7eb;
+    background:
+      radial-gradient(circle at 15% 15%,rgba(99,102,241,.24),transparent 28%),
+      radial-gradient(circle at 85% 80%,rgba(6,182,212,.18),transparent 30%),
+      #0b1120;
+    padding:34px 20px 50px;
+}
+.container{width:min(1100px,100%);margin:auto}
+.header{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:26px;gap:20px
+}
+.brand{display:flex;align-items:center;gap:15px}
+.logo{
+    width:56px;height:56px;border-radius:16px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:27px;
+    background:linear-gradient(135deg,#6366f1,#06b6d4);
+    box-shadow:0 12px 32px rgba(79,70,229,.32)
+}
+h1{font-size:27px;color:#f8fafc}
+.subtitle{font-size:13px;color:#94a3b8;margin-top:4px}
+.badge{
+    padding:8px 13px;border-radius:20px;
+    border:1px solid rgba(34,197,94,.2);
+    background:rgba(34,197,94,.08);color:#4ade80;font-size:13px;
+    white-space:nowrap
+}
+.grid{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px
+}
+.card{
+    background:rgba(15,23,42,.78);
+    border:1px solid rgba(148,163,184,.14);
+    border-radius:20px;padding:22px;
+    backdrop-filter:blur(18px);
+    box-shadow:0 22px 55px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.035)
+}
+.card.full{grid-column:1/-1}
+.card-head{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:18px
+}
+.card-title{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:650;color:#f8fafc}
+.icon{
+    width:35px;height:35px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(99,102,241,.13);font-size:18px
+}
+.tag{
+    font-size:11px;color:#94a3b8;border:1px solid rgba(148,163,184,.14);
+    padding:5px 8px;border-radius:8px
+}
+.rows{display:flex;flex-direction:column;gap:9px}
+.row{
+    display:grid;grid-template-columns:145px minmax(0,1fr) auto;
+    align-items:center;min-height:52px;padding:0 12px;
+    border-radius:12px;background:rgba(30,41,59,.58);
+    border:1px solid rgba(148,163,184,.07)
+}
+.label{font-size:13px;color:#94a3b8}
+.value{
+    color:#f8fafc;font-size:14px;font-weight:500;
+    word-break:break-all;padding-right:8px
+}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.copy{
+    border:0;background:transparent;color:#64748b;
+    cursor:pointer;padding:7px 8px;border-radius:8px;font-size:12px
+}
+.copy:hover{color:#60a5fa;background:rgba(96,165,250,.1)}
+.password{letter-spacing:1px}
+.eye{
+    border:0;background:transparent;color:#64748b;cursor:pointer;
+    padding:6px;font-size:13px
+}
+.password-wrap{display:flex;align-items:center;min-width:0}
+.actions{display:flex;gap:10px;margin-top:17px}
+.btn{
+    flex:1;border:0;border-radius:11px;padding:11px 14px;
+    cursor:pointer;font-weight:600;font-size:13px
+}
+.primary{color:#fff;background:linear-gradient(135deg,#6366f1,#4f46e5)}
+.secondary{color:#cbd5e1;background:rgba(51,65,85,.65);border:1px solid rgba(148,163,184,.1)}
+.btn:hover{transform:translateY(-1px)}
+.note{
+    margin-top:20px;padding:13px 15px;border-radius:12px;
+    color:#fbbf24;background:rgba(245,158,11,.07);
+    border:1px solid rgba(245,158,11,.13);font-size:12px;line-height:1.65
+}
+.footer{text-align:center;color:#64748b;font-size:12px;margin-top:22px}
+.toast{
+    position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);
+    opacity:0;pointer-events:none;transition:.25s;
+    background:#1e293b;color:#f8fafc;padding:10px 16px;
+    border-radius:10px;border:1px solid rgba(148,163,184,.14);
+    box-shadow:0 12px 30px rgba(0,0,0,.35);font-size:13px
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:760px){
+    body{padding:20px 14px}
+    .grid{grid-template-columns:1fr}
+    .card.full{grid-column:auto}
+    .header{align-items:flex-start}
+    .badge{display:none}
+    .row{grid-template-columns:105px minmax(0,1fr) auto}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header class="header">
+    <div class="brand">
+        <div class="logo">🖥️</div>
+        <div>
+            <h1>Server & Database Credentials</h1>
+            <div class="subtitle">Infrastructure access information</div>
+        </div>
+    </div>
+    <div class="badge">● Information Ready</div>
+</header>
+
+<div class="grid">
+
+<!-- Main Server -->
+<section class="card full">
+    <div class="card-head">
+        <div class="card-title"><span class="icon">🖥️</span>Server Access</div>
+        <span class="tag">SSH</span>
+    </div>
+
+    <div class="rows">
+        <div class="row">
+            <div class="label">Hostname</div>
+            <div class="value mono">60.13.248.196</div>
+            <button class="copy" onclick="copyText('60.13.248.196')">Copy</button>
+        </div>
+        <div class="row">
+            <div class="label">Port</div>
+            <div class="value mono">3322</div>
+            <button class="copy" onclick="copyText('3322')">Copy</button>
+        </div>
+        <div class="row">
+            <div class="label">Username</div>
+            <div class="value mono">root</div>
+            <button class="copy" onclick="copyText('root')">Copy</button>
+        </div>
+        <div class="row">
+            <div class="label">Password</div>
+            <div class="password-wrap">
+                <span class="value mono password" id="serverPassword">••••••••••••••••••••</span>
+                <button class="eye" onclick="togglePassword('serverPassword','XJLT_template@2022',this)">👁</button>
+            </div>
+            <button class="copy" onclick="copyText('XJLT_template@2022')">Copy</button>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="btn primary" onclick="copyBlock('Hostname : 60.13.248.196\nPort : 3322\nUsername : root\nPassword : XJLT_template@2022')">Copy Server Details</button>
+        <button class="btn secondary" onclick="copyText('ssh://root@60.13.248.196:3322')">Copy SSH URI</button>
+    </div>
+</section>
+
+<!-- Web Login -->
+<section class="card">
+    <div class="card-head">
+        <div class="card-title"><span class="icon">🌐</span>Web Login</div>
+        <span class="tag">Port 19990</span>
+    </div>
+    <div class="rows">
+        <div class="row">
+            <div class="label">URL</div>
+            <div class="value mono">http://60.13.248.196:19990</div>
+            <button class="copy" onclick="copyText('http://60.13.248.196:19990')">Copy</button>
+        </div>
+        <div class="row">
+            <div class="label">Username</div>
+            <div class="value mono">admin</div>
+            <button class="copy" onclick="copyText('admin')">Copy</button>
+        </div>
+        <div class="row">
+            <div class="label">Password</div>
+            <div class="password-wrap">
+                <span class="value mono password" id="web19990Password">••••••••••••</span>
+                <button class="eye" onclick="togglePassword('web19990Password','gtcom2022',this)">👁</button>
+            </div>
+            <button class="copy" onclick="copyText('gtcom2022')">Copy</button>
+        </div>
+    </div>
+    <div class="actions">
+        <button class="btn primary" onclick="openUrl('http://60.13.248.196:19990')">Open Login Page</button>
+    </div>
+</section>
+
+<section class="card">
+    <div class="card-head">
+        <div class="card-title"><span class="icon">🌐</span>Web Login</div>
+        <span class="tag">Port 19991</span>
+    </div>
+    <div class="rows">
+        <div class="row">
+            <div class="label">URL</div>
+            <div class="value mono">http://60.13.248.196:19991</div>
+            <button class="copy" onclick="copyText('http://60.13.248.196:19991')">Copy</button>
+        </div>
+        <div class="row">
+            <div class="label">Username</div>
+            <div class="value mono">admin</div>
+            <button class="copy" onclick="copyText('admin')">Copy</button>
+        </div>
+        <div class="row">
+            <div class="label">Password</div>
+            <div class="password-wrap">
+                <span class="value mono password" id="web19991Password">••••••••••••</span>
+                <button class="eye" onclick="togglePassword('web19991Password','gtcom2022',this)">👁</button>
+            </div>
+            <button class="copy" onclick="copyText('gtcom2022')">Copy</button>
+        </div>
+    </div>
+    <div class="actions">
+        <button class="btn primary" onclick="openUrl('http://60.13.248.196:19991')">Open Login Page</button>
+    </div>
+</section>
+
+<!-- MySQL -->
+<section class="card">
+    <div class="card-head">
+        <div class="card-title"><span class="icon">🐬</span>MySQL</div>
+        <span class="tag">Port 13306</span>
+    </div>
+    <div class="rows">
+        <div class="row">
+            <div class="label">Host</div>
+            <div class="value mono">60.13.248.196</div>
+            <button class="copy" onclick="copyText('60.13.248.196')">Copy</button>
+        </div>
+        <div class="row">
+            <div class="label">Port</div>
+            <div class="value mono">13306</div>
+            <button class="copy" onclick="copyText('13306')">Copy</button>
+        </div>
+        <div class="row">
+            <div class="label">Username</div>
+            <div class="value mono">root</div>
+            <button class="copy" onclick="copyText('root')">Copy</button>
+        </div>
+        <div class="row">
+            <div class="label">Password</div>
+            <div class="password-wrap">
+                <span class="value mono password" id="mysqlPassword">••••••••••••••</span>
+                <button class="eye" onclick="togglePassword('mysqlPassword','AtemSDTporary',this)">👁</button>
+            </div>
+            <button class="copy" onclick="copyText('AtemSDTporary')">Copy</button>
+        </div>
+    </div>
+</section>
+
+<!-- MongoDB -->
+<section class="card">
+    <div class="card-head">
+        <div class="card-title"><span class="icon">🍃</span>MongoDB</div>
+        <span class="tag">Port 27017</span>
+    </div>
+    <div class="rows">
+        <div class="row">
+            <div class="label">Host</div>
+            <div class="value mono">172.24.1.2</div>
+            <button class="copy" onclick="copyText('172.24.1.2')">Copy</button>
+        </div>
+        <div class="row">
+            <div class="label">Port</div>
+            <div class="value mono">27017</div>
+            <button class="copy" onclick="copyText('27017')">Copy</button>
+        </div>
+        <div class="row">
+            <div class="label">Username</div>
+            <div class="value mono">root</div>
+            <button class="copy" onclick="copyText('root')">Copy</button>
+        </div>
+        <div class="row">
+            <div class="label">Password</div>
+            <div class="password-wrap">
+                <span class="value mono password" id="mongoPassword">••••••••••••••</span>
+                <button class="eye" onclick="togglePassword('mongoPassword','thQwWe2Q25iX',this)">👁</button>
+            </div>
+            <button class="copy" onclick="copyText('thQwWe2Q25iX')">Copy</button>
+        </div>
+    </div>
+</section>
+
+<!-- InfluxDB -->
+<section class="card">
+    <div class="card-head">
+        <div class="card-title"><span class="icon">📈</span>InfluxDB</div>
+        <span class="tag">Port 18086</span>
+    </div>
+    <div class="rows">
+        <div class="row">
+            <div class="label">Host</div>
+            <div class="value mono">172.24.1.2</div>
+            <button class="copy" onclick="copyText('172.24.1.2')">Copy</button>
+        </div>
+        <div class="row">
+            <div class="label">Port</div>
+            <div class="value mono">18086</div>
+            <button class="copy" onclick="copyText('18086')">Copy</button>
+        </div>
+        <div class="row">
+            <div class="label">Username</div>
+            <div class="value mono">admin</div>
+            <button class="copy" onclick="copyText('admin')">Copy</button>
+        </div>
+        <div class="row">
+            <div class="label">Password</div>
+            <div class="password-wrap">
+                <span class="value mono password" id="influxPassword">••••••••••••</span>
+                <button class="eye" onclick="togglePassword('influxPassword','XINJITG52HTas',this)">👁</button>
+            </div>
+            <button class="copy" onclick="copyText('XINJITG52HTas')">Copy</button>
+        </div>
+        <div class="row">
+            <div class="label">Database</div>
+            <div class="value mono">athena_plat</div>
+            <button class="copy" onclick="copyText('athena_plat')">Copy</button>
+        </div>
+    </div>
+</section>
+
+</div>
+
+<div class="note">
+    ⚠️ Security Notice: This page contains server and database credentials.
+    Keep this HTML file in a controlled environment and do not publish it to a public website.
+    For production use, consider storing credentials in a secure password manager instead of plain HTML.
+</div>
+
+<div class="footer">Infrastructure Access Information · Local Use Only</div>
+</div>
+
+<div class="toast" id="toast">Copied</div>
+
+<script>
+function copyText(text){
+    navigator.clipboard.writeText(text)
+      .then(()=>showToast("Copied to clipboard"))
+      .catch(()=>showToast("Copy failed"));
+}
+function copyBlock(text){copyText(text)}
+function togglePassword(id,password,button){
+    const el=document.getElementById(id);
+    if(el.dataset.visible==="1"){
+        el.textContent="••••••••••••••••••••";
+        el.dataset.visible="0";
+        button.textContent="👁";
+    }else{
+        el.textContent=password;
+        el.dataset.visible="1";
+        button.textContent="🙈";
+    }
+}
+function openUrl(url){
+    window.open(url,"_blank");
+}
+function showToast(message){
+    const toast=document.getElementById("toast");
+    toast.textContent=message;
+    toast.classList.add("show");
+    clearTimeout(window.toastTimer);
+    window.toastTimer=setTimeout(()=>toast.classList.remove("show"),1800);
+}
+</script>
+</body>
+</html>
